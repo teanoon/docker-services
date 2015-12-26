@@ -4,5 +4,5 @@
 /proxy/*
 
 # include docker files
-!/*/*.example
+!/app/*.example
 !/db/.keep

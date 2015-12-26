@@ -103,7 +103,9 @@ Vagrant.configure(2) do |config|
       sudo apt-get install -y docker-engine
       curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       chmod +x /usr/local/bin/docker-compose
+      echo "DOCKER_OPTS=\"--registry-mirror=https://ocbybxhe.mirror.aliyuncs.com\"" | sudo tee -a /etc/default/docker
+      sudo usermod -aG docker vagrant
+      sudo service docker restart
     fi
-    sudo usermod -aG docker vagrant
   SHELL
 end

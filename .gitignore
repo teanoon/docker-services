@@ -1,0 +1,8 @@
+# ignore project-related files
+/app/*
+/db/*
+/proxy/*
+
+# include docker files
+!/*/*.example
+!/db/.keep

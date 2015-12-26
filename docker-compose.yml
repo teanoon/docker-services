@@ -1,0 +1,25 @@
+db:  
+  container_name: recruitment-db
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: recruitment_development 
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+  volumes:
+   - ./db:/var/lib/mysql
+proxy:
+  container_name: recruitment-web
+  image: nginx:1.9.9
+  volumes:
+   - ./proxy/html:/usr/share/nginx/html:ro
+   - ./proxy/site:/etc/nginx/sites-enabled/site:ro
+   - ./app/tmp/sockets/puma.sock:/tmp/docker.sock:ro
+app:
+  container_name: recruitment-app
+  build: app
+  ports:
+   - 3000:3000
+  volumes:
+   - ./app:/code
+  links:
+   - db
+   - proxy

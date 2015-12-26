@@ -1,0 +1,32 @@
+upstream xxx {
+        server unix:///home/deploy/apps/xxx/shared/tmp/sockets/puma.sock;
+}
+
+server {
+        listen 80;
+        server_name xxx.xx.xx.xx
+
+        access_log /home/deploy/apps/xxx/current/log/access.log;
+        error_log /home/deploy/apps/xxx/current/log/error.log;
+
+        root   /home/deploy/apps/xxx/current/public/;
+        index  index.html;
+
+        location / {
+                proxy_pass http://xxx;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        location ~ ^/(assets)/ {
+                root /home/deploy/apps/xxx/current/public/;
+                gzip_static on;
+                expires max;
+                add_header Cache-Control public;
+        }
+
+        location ~ \.(jpg|jpeg|png|gif|tiff) {
+                expires max;
+                add_header Cache-Control public;
+        }
+}

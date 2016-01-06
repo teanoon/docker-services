@@ -1,7 +1,6 @@
-# .//app.yml
+# .tmuxinator.yml
 
 name: app
-root: /code
 
 # Optional tmux socket
 # socket_name: foo
@@ -11,6 +10,7 @@ root: /code
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 # pre_window: rbenv shell 2.0.0-p247
+pre_window: export PATH=/code/.bundle/bin:/usr/local/bundle/bin:$PATH
 
 # Pass command line options to tmux. Useful for specifying a different tmux.conf.
 # tmux_options: -f ~/.tmux.mac.conf
@@ -25,8 +25,8 @@ windows:
   - server:
       layout: main-horizontal
       panes:
-        - zeus start
-        - zeus s -b 0.0.0.0 -p 3000 
+        - bundle exec zeus start
+        - bundle exec zeus s -b 0.0.0.0 -p 3000 
   - monitor:
       layout: main-horizontal
       panes:

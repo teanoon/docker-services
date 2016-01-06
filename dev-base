@@ -1,0 +1,17 @@
+FROM ubuntu:14.04
+
+MAINTAINER Teanoon Celord <anticipationvu@gmail.com>
+LABEL Description = "base image for development purpose which allows ides"
+
+RUN apt-get install -y wget && \
+    wget https://gist.githubusercontent.com/teanoon/175eeb157dc83df72419/raw/731c84f9c0db3cac7e1291559646f9bf28331716/sources.list.aliyun && \
+    cat sources.list.aliyun > /etc/apt/sources.list && \
+    rm sources.list.aliyun && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    # common x11 client dependencies
+    libdbusmenu-glib4 libdbusmenu-gtk4 libgtk2.0-0 libgtk2.0-bin libgtk2.0-common libstartup-notification0 libxcb-util0 libgconf-2-4 \
+    # atom dependencies
+    libnss3 libasound2 libxtst6 \
+    # some ides need machine-id info like atom/eclipse
+    dbus && dbus-uuidgen > /etc/machine-id
+    # rm -rf /var/lib/apt/lists/*

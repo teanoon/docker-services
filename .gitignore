@@ -6,3 +6,6 @@
 # include docker files
 !/app/*.example
 !/db/.keep
+
+# exclude big files
+*.box

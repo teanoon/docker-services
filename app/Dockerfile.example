@@ -1,42 +1,48 @@
-# Playground dock for Ruby projects
-FROM rails:4.2.5
+FROM teanoon/dev-base:0.1
 
 MAINTAINER Teanoon Celord <anticipationvu@gmail.com>
 LABEL Description = "app for recruitor"
 
-# gpg keys listed at https://github.com/nodejs/node
-RUN set -ex \
-  && for key in \
-    9554F04D7259F04124DE6B476D5A82AC7E37093B \
-    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    0034A06D9D9B0064CE8ADF6BF1747F4AD2306D93 \
-    FD3A5288F042B6850C66B31F09FE44734EB7990E \
-    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
-    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-  ; do \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-  done
-
-ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 4.2.4
-
-RUN curl -SLO "http://npm.taobao.org/mirrors/node/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
-  && curl -SLO "http://npm.taobao.org/mirrors/node/v$NODE_VERSION/SHASUMS256.txt.asc" \
-  && gpg --verify SHASUMS256.txt.asc \
-  && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
-  && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
-  && rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
-  && npm install -g watchify browserify \
-  && gem install zeus tmuxinator
+RUN apt-get install -y tmux vim htop openssh-client vim git zsh mysql-client libmysqlclient-dev postgresql-client sqlite3 autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev libssl-dev --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 # create new users
 RUN useradd -m dev && \
     echo "dev:dev" | chpasswd && \
-    chown -R dev:dev /usr/local/bundle
+    mkdir /config && chown dev:dev /config -R && \
+    usermod -d /config dev && chsh -s /bin/zsh dev
 
 USER dev
+RUN git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh && \
+    git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
+    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
+    git clone https://github.com/creationix/nvm.git ~/.nvm
+
+RUN wget https://gist.githubusercontent.com/teanoon/ec2831530550ec52db9b/raw/bc7075197c5b4e4c5c442926ef11c731747b87cb/.zshrc -O ~/.zshrc && \
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc && \
+    echo 'eval "$(rbenv init -)"' >> ~/.zshrc && \
+    export PATH="$HOME/.rbenv/bin:$PATH" && eval "$(rbenv init -)" && \
+    env RUBY_BUILD_MIRROR_URL=https://ruby.taobao.org/mirrors/ruby/ruby-2.2.3.tar.gz# rbenv install 2.2.3 && \
+    rbenv global 2.2.3 && rbenv rehash && gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
+
+RUN cd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && cd ~/ && \
+    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc && \
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> ~/.zshrc && \
+    export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
+    export NVM_NODEJS_ORG_MIRROR=http://npm.taobao.org/mirrors/node && \
+    export NVM_IOJS_ORG_MIRROR=http://npm.taobao.org/mirrors/iojs && \
+    nvm install 4.2.3 && \
+    nvm use 4.2.3 && \
+    nvm alias default node && \
+    npm config set registry https://registry.npm.taobao.org -g && \
+    npm config set disturl https://npm.taobao.org/dist -g && \
+    npm install -g watchify browserify
 
 WORKDIR /code
 
 EXPOSE 3000
-CMD bundle install --path /code/.bundle && bundle exec rake db:migrate && bundle exec rails s -b 0.0.0.0
+ENV GEM_HOME /code/.bundle
+ENV PATH /code/.bundle/bin:$PATH
+ENV SHELL /bin/zsh
+# TODO need "gem install bundler" manually for now.
+CMD bundle install && bundle exec rake db:migrate && bundle exec rails s -b 0.0.0.0

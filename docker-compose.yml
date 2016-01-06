@@ -20,6 +20,14 @@ app:
    - 3000:3000
   volumes:
    - ./app:/code
+   - /projects/.ssh/id_rsa:/config/.ssh/id_rsa
+   - /projects/.ssh/id_rsa.pub:/config/.ssh/id_rsa.pub
+   - /projects/.ssh/known_hosts:/config/.ssh/known_hosts
+   - /projects/.gitconfig:/config/.gitconfig
+   - /projects/.atom:/config/.atom
+   - /projects/atom:/config/atom
+  environment:
+    DISPLAY: 192.168.99.1:0.0
   links:
    - db
    - proxy

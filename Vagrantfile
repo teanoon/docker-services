@@ -80,6 +80,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", name: 'config', privileged: false, inline: <<-SHELL
     sudo hostname docker-machine
+    # sudo ip route add default via 10.0.2.15
+    # hosts add 127.0.0.1 docker-machine
+    # set the last nic as nat mode
     if [ ! -d ~/.ssh ]; then
       ssh-keygen -f ~/.ssh/id_rsa -N ''
     fi
@@ -93,6 +96,7 @@ Vagrant.configure(2) do |config|
     if [ ! -f ~/.zshrc ]; then
       git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
       cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+      # docker-compose run
       sudo chsh -s /bin/zsh vagrant
     fi
   SHELL

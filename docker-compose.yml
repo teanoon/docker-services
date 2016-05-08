@@ -1,28 +1,50 @@
-db:  
-  container_name: PROJECT_NAME-db
-  image: mysql:5.6
-  environment:
-    MYSQL_DATABASE: PROJECT_NAME_development
-    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-  volumes:
-   - ./db:/var/lib/mysql
-proxy:
-  container_name: PROJECT_NAME-proxy
-  image: nginx:1.9.9
-  volumes:
-   - ./proxy/html:/usr/share/nginx/html:ro
-   - ./proxy/site:/etc/nginx/sites-enabled/site:ro
-   - ./app/tmp/sockets/puma.sock:/tmp/docker.sock:ro
-app:
-  container_name: PROJECT_NAME-app
-  build: app
-  ports:
-   - 3000:3000
-  volumes:
-   - ./app:/app
-   - ~/.ssh:/config/.ssh/
-   - ~/.gitconfig:/config/.gitconfig
-   - ./utils/.gems:/config/.gems
-  links:
-   - db
-   - proxy
+version: '2'
+services:
+  db: 
+    container_name: recruitment-db
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: recruitment_development
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./db:/var/lib/mysql
+  proxy:
+    container_name: recruitment-proxy
+    image: nginx:1.9.9
+    volumes:
+      - ./proxy/html:/usr/share/nginx/html:ro
+      - ./proxy/site:/etc/nginx/sites-enabled/site:ro
+      - ./code/recruitment/tmp/sockets/puma.sock:/tmp/docker.sock:ro
+  data:
+    container_name: recruitment-data
+    image: debian:jessie
+    volumes:
+      - code-volume:/code
+      - node-modules-volume:/usr/local/lib/node_modules
+      - bundle-volume:/usr/local/bundle
+    command: 'chown -R 1000:1000 /code /usr/local/lib/node_modules /usr/local/bundle'
+  node:
+    container_name: recruitment-node
+    build: node
+    volumes_from:
+      - data
+  app:
+    container_name: recruitment-app
+    build: app
+    ports:
+      - 3000:3000
+    volumes_from:
+      - data
+    volumes:
+      - ~/.ssh:/home/dev/.ssh
+      - ~/.gitconfig:/home/dev/.gitconfig
+    links:
+      - db
+      - proxy
+volumes:
+  code-volume:
+    driver: local
+  bundle-volume:
+    driver: local
+  node-modules-volume:
+    driver: local

@@ -1,3 +1,0 @@
-[submodule "dev-base"]
-	path = dev-base
-	url = git@github.com:teanoon/dev-base.git

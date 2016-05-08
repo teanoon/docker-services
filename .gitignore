@@ -1,12 +1,6 @@
 # ignore project-related files
-/app/*
 /db/*
 /proxy/*
 
 # include docker files
-!/app/*.example
-!/app/.dockerignore
 !/db/.keep
-
-# exclude big files
-*.box

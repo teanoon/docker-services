@@ -1,0 +1,17 @@
+version: '2'
+services:
+  dev:
+    container_name: recruitment-dev
+    build: dev
+    volumes_from:
+      - data
+    volumes:
+      - /boxes/atom:/home/dev/atom
+      - /boxes/.atom:/home/dev/.atom
+      - ~/.ssh:/home/dev/.ssh
+      - ~/.gitconfig:/home/dev/.gitconfig
+    environment:
+      DISPLAY: :0
+    links:
+      - db
+      - proxy

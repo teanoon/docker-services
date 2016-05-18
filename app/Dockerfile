@@ -8,7 +8,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m dev && \
-    echo "dev:dev" | chpasswd
+    echo "dev:dev" | chpasswd && \
+    # ruby is accessible by staff group
+    usermod -aG staff dev
 
 USER dev
 

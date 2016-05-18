@@ -10,8 +10,11 @@ services:
       - /boxes/.atom:/home/dev/.atom
       - ~/.ssh:/home/dev/.ssh
       - ~/.gitconfig:/home/dev/.gitconfig
+      - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       DISPLAY: :0
+    ports:
+      - 3000:3000
     links:
       - db
       - proxy

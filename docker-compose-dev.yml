@@ -1,7 +1,7 @@
 version: '2'
 services:
   dev:
-    container_name: recruitment-dev
+    container_name: PROJECT-dev
     build: dev
     volumes_from:
       - data

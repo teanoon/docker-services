@@ -1,4 +1,4 @@
-FROM recruitment_app:latest
+FROM PROJECT_app:latest
 
 MAINTAINER Teanoon Celord <anticipationvu@gmail.com>
 LABEL Description = "base image for development purpose which allows ides"

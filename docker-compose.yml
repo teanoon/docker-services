@@ -28,6 +28,8 @@ services:
     build: node
     volumes_from:
       - data
+    volumes:
+      - ~/.ssh:/home/dev/.ssh
   app:
     container_name: recruitment-app
     build: app

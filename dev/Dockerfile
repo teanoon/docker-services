@@ -10,7 +10,7 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | te
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
     apt-get update && apt-get install -y --no-install-recommends \
     # common dev tools
-    vim htop vim git openssh-client zsh tmux wget curl w3m \
+    vim less htop git openssh-client zsh tmux wget curl w3m \
     # common x11 client dependencies
     libdbusmenu-glib4 libdbusmenu-gtk4 libgtk2.0-0 libgtk2.0-bin libgtk2.0-common libstartup-notification0 libxcb-util0 libgconf-2-4 \
     # atom dependencies

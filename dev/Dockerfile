@@ -4,11 +4,7 @@ MAINTAINER Teanoon Celord <anticipationvu@gmail.com>
 LABEL Description = "base image for development purpose which allows ides"
 
 USER root
-RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list && \
-    echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 && \
-    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-    apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     # common dev tools
     vim less htop git openssh-client zsh tmux wget curl w3m \
     # common x11 client dependencies
@@ -19,14 +15,11 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | te
     ttf-wqy-microhei \
     # certificate
     ca-certificates \
-    zenity dbus \
     # ruby
     mysql-client libmysqlclient-dev postgresql-client sqlite3 \
     libssl-dev autoconf bison build-essential libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev \
-    # java
-    oracle-java8-installer oracle-java8-set-default && \
     # some ides need machine-id info like atom/eclipse
-    dbus-uuidgen > /etc/machine-id
+    dbus && dbus-uuidgen > /etc/machine-id
     # rm -rf /var/lib/apt/lists/*
 
 RUN chsh -s /bin/zsh dev

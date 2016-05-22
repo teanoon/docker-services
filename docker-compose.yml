@@ -1,13 +1,13 @@
 version: '2'
 services:
-  db: 
+  mysql: 
     container_name: PROJECT-db
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: PROJECT_development
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     volumes:
-      - ./db:/var/lib/mysql
+      - ./db/interview:/var/lib/mysql
   proxy:
     container_name: PROJECT-proxy
     image: nginx:1.9.9
@@ -22,7 +22,6 @@ services:
       - code-volume:/code
       - node-modules-volume:/usr/local/lib/node_modules
       - bundle-volume:/usr/local/bundle
-    command: 'chown -R 1000:1000 /code /usr/local/lib/node_modules /usr/local/bundle'
   node:
     container_name: PROJECT-node
     build: node
@@ -30,6 +29,7 @@ services:
       - data
     volumes:
       - ~/.ssh:/home/dev/.ssh
+    command: 'bash -c "/home/dev/run.sh; npm"'
   app:
     container_name: PROJECT-app
     build: app
@@ -41,7 +41,7 @@ services:
       - ~/.ssh:/home/dev/.ssh
       - ~/.gitconfig:/home/dev/.gitconfig
     links:
-      - db
+      - mysql
       - proxy
 volumes:
   code-volume:

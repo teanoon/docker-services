@@ -16,5 +16,4 @@ services:
     ports:
       - 3000:3000
     links:
-      - db
-      - proxy
+      - mysql

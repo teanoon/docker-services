@@ -4,7 +4,6 @@ echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | sudo tee /etc
 sudo apt-get update
 sudo apt-get install -y git zsh htop
 
-sudo hostname docker-machine
 if [ ! -d ~/.ssh ]; then
   ssh-keygen -f ~/.ssh/id_rsa -N ''
 fi
@@ -20,5 +19,5 @@ if [ ! -f /usr/local/bin/docker-compose ]; then
   sudo apt-get install -y docker-engine
   curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-$(uname -s)-$(uname -m) > /usr/local/bin/docker-compose
   chmod +x /usr/local/bin/docker-compose
+  sudo usermod -aG docker $(whoami)
 fi
-sudo usermod -aG docker vagrant
